@@ -1,6 +1,6 @@
 # Czech Surname Corrector
 
-Nástroj pro automatickou opravu českých příjmení v CSV souborech. Porovnává příjmení s referenční databází a doplňuje chybějící diakritiku pomocí fuzzy matching algoritmů.
+Nástroj pro automatickou opravu českých příjmení v CSV souborech. Porovnává příjmení s referenční databází a doplňuje chybějící diakritiku pomocí fuzzy matching algoritmů. Používá Ray pro paralelní zpracování velkých datových souborů a rapidfuzz pro inteligentní vyhledávání podobných příjmení. Užitečný pro čištění dat z různých zdrojů, kde může chybět správná diakritika.
 
 ## Instalace
 
