@@ -1,8 +1,9 @@
 """
-CSV Name Correction Tool
-
-This module provides functionality to correct Czech surnames in CSV files
-by matching them against a reference database and applying diacritics.
+Project: Czech Surname Restorator
+File: main.py
+Description: Main script to correct Czech surnames in CSV files using a reference database and fuzzy matching.
+Author: Jan Alexandr Kopřiva jan.alexandr.kopriva@gmail.com
+License: MIT
 """
 
 import logging
@@ -88,7 +89,7 @@ def union_diacritics(orig_cluster: str, ref_cluster: str) -> str:
     diacs_o = o_nfd[1:]
     base_r = r_nfd[0]
     diacs_r = r_nfd[1:]
-    # Pokud se liší i základní písmeno, bereme původní
+    # If base characters differ, keep the original to preserve the root letter
     if unicodedata.normalize("NFD", base_o)[0] != unicodedata.normalize("NFD", base_r)[0]:
         return orig_cluster
     new_diacs = list(diacs_o)
@@ -113,7 +114,7 @@ def get_grapheme_count(text: str) -> int:
 
 
 ######################################################################
-# Vytvoření indexu (provádí se jen jednou před chunkováním CSV).
+# Index creation (run once before chunking)
 ######################################################################
 def vytvor_index(prijmeni_list: list) -> dict:
     """
@@ -136,16 +137,17 @@ def vytvor_index(prijmeni_list: list) -> dict:
 
 
 ######################################################################
-# Funkce pro opravu příjmení s využitím indexu.
+# Surname correction using the index
 ######################################################################
 @ray.remote
-def oprav_prijmeni_ray(prijmeni_batch: list, dict_index: dict) -> list:
+def oprav_prijmeni_ray(prijmeni_batch: list, dict_index: dict, dict_index_values: list) -> list:
     """
     Correct surnames in a batch using Ray for parallel processing.
     
     Args:
         prijmeni_batch (list): Batch of surnames to correct
         dict_index (dict): Reference index for surname matching
+        dict_index_values (list): Flattened list of all reference surnames for fuzzy search
         
     Returns:
         list: List of corrected surnames
@@ -161,8 +163,7 @@ def oprav_prijmeni_ray(prijmeni_batch: list, dict_index: dict) -> list:
         nd = remove_diacritics(prijmeni).lower()
         key = (pocet, nd)
 
-        # 1) Pokud klíč existuje a je tam jen jedna varianta,
-        #    rovnou bereme tuhle jedinou.
+        # 1) If key exists and has a single candidate, use it directly
         if key in dict_index:
             candidates = dict_index[key]
             if len(candidates) == 1:
@@ -170,12 +171,11 @@ def oprav_prijmeni_ray(prijmeni_batch: list, dict_index: dict) -> list:
                 opravene_prijmeni.append(opravene)
                 continue
             else:
-                # 2) Je více variant - spustíme fuzzy jen na ně
-                # (typicky bude jen pár variant, např. do 10, ne 200k)
+                # 2) Multiple candidates: run fuzzy match only on this small subset
                 best_match = process.extractOne(
                     prijmeni,
                     candidates,
-                    scorer=fuzz.token_set_ratio  # nebo váš custom scorer
+                    scorer=fuzz.token_set_ratio
                 )
                 if best_match and best_match[1] >= 80:
                     opravene = dopln_diakritiku(prijmeni, best_match[0])
@@ -184,23 +184,16 @@ def oprav_prijmeni_ray(prijmeni_batch: list, dict_index: dict) -> list:
                 opravene_prijmeni.append(opravene)
                 continue
 
-        # 3) Pokud klíč neexistuje v indexu,
-        #    lze zkusit fallback fuzzy search do celého slovníku,
-        #    NEBO i do vybrané podmnožiny (např. stejného počtu grafémů).
-        #    Tady ukázka do "všech" pro minimalizaci změn oproti původnímu kódu.
-
-        # dict_index_values je list všech slovníkových příjmení
-        # Budeme ho předávat zvenčí (viz main) - nicméně pozor na výkon
-        # Podle velikosti to může být pořád velké.
-        global dict_index_values
-
-        # Fuzzy hledáme top 5
+        # 3) Key missing in index: fallback to fuzzy search against full dictionary
+        # Note: This can be performance intensive because we search the entire list
+        
+        # Find top matches
         found = process.extract(prijmeni, dict_index_values, limit=5)
         if not found:
             opravene_prijmeni.append(prijmeni)
             continue
 
-        # Vybereme prvního nad 80 %, apod.
+        # Select first match with high confidence
         candidate = None
         for cand in found:
             if cand[1] >= 75:
@@ -217,34 +210,42 @@ def oprav_prijmeni_ray(prijmeni_batch: list, dict_index: dict) -> list:
 
 
 if __name__ == "__main__":
-    # Configuration constants
-    REFERENCE_CSV = "XY.csv"
-    INPUT_CSV = "XY.csv"
-    OUTPUT_CSV = "XY.csv"
+    # Configuration
+    # REPLACE THESE VALUES WITH YOUR ACTUAL FILE PATHS
+    REFERENCE_CSV = "surnames_all.csv"  # The file containing the correct list of surnames
+    INPUT_CSV = "input_names.csv"             # The file containing names to specific correction
+    OUTPUT_CSV = "output_corrected.csv"       # Where to save the results
+    
     CHUNK_SIZE = 10000
     BATCH_SIZE = 1000
     
     start_time = time.time()
     logger.info("Starting CSV name correction process")
 
-    # 1) Load reference CSV surnames
+    # Load reference CSV surnames
     logger.info(f"Loading reference surnames from {REFERENCE_CSV}")
     prijmeni_df = pd.read_csv(REFERENCE_CSV, dtype=str)
     prijmeni_list = prijmeni_df["column1"].dropna().tolist()
+    prijmeni_list.sort() # Sort alphabetically as requested
     logger.info(f"Loaded {len(prijmeni_list)} reference surnames")
 
-    # 2) Create index once
+    # Create index
     logger.info("Creating surname index")
     dict_index = vytvor_index(prijmeni_list)
     logger.info(f"Created index with {len(dict_index)} unique keys")
 
-    # 3) Create global list for fallback fuzzy search
+    # Create global list for fallback fuzzy search
     dict_index_values = list(dict_index.values())
     # Flatten the list of lists into a single list
     dict_index_values = [x for sub in dict_index_values for x in sub]
     logger.info(f"Prepared {len(dict_index_values)} surnames for fallback search")
 
-    # No file output - processing only
+    # Put heavy data into Ray Object Store
+    dict_index_ref = ray.put(dict_index)
+    dict_index_values_ref = ray.put(dict_index_values)
+
+
+    # Processing only; no file output configured
 
     first_chunk = True
     processed_chunks = 0
@@ -254,25 +255,26 @@ if __name__ == "__main__":
         chunk["krestni_jmeno"] = chunk["Person_Name"].str.extract(r"^(\S+)")
         chunk["prijmeni"] = chunk["Person_Name"].str.extract(r"(\S+)$")
 
-        # Split into smaller batches for Ray processing
+        # Split into smaller batches for Ray parallelism
         prijmeni_batches = [
             chunk["prijmeni"].iloc[i: i + BATCH_SIZE].tolist()
             for i in range(0, len(chunk), BATCH_SIZE)
         ]
 
-        # Start asynchronous tasks
+
         tasks = []
         for batch in prijmeni_batches:
-            tasks.append(oprav_prijmeni_ray.remote(batch, dict_index))
+            tasks.append(oprav_prijmeni_ray.remote(batch, dict_index_ref, dict_index_values_ref))
 
-        # Wait for completion
+
+
         results = ray.get(tasks)
 
-        # Combine results back
+
         chunk["opravene_prijmeni"] = [item for sublist in results for item in sublist]
         chunk["opravene_jmeno"] = chunk["krestni_jmeno"] + " " + chunk["opravene_prijmeni"]
 
-        # CSV output removed - not pushing to file
+        # Output disabled
         first_chunk = False
         processed_chunks += 1
         
