@@ -247,7 +247,6 @@ if __name__ == "__main__":
 
     # Processing only; no file output configured
 
-    first_chunk = True
     processed_chunks = 0
 
     logger.info(f"Processing input file {INPUT_CSV} in chunks of {CHUNK_SIZE}")
@@ -275,7 +274,6 @@ if __name__ == "__main__":
         chunk["opravene_jmeno"] = chunk["krestni_jmeno"] + " " + chunk["opravene_prijmeni"]
 
         # Output disabled
-        first_chunk = False
         processed_chunks += 1
         
         logger.info(f"Processed chunk {processed_chunks} with {len(chunk)} records")
