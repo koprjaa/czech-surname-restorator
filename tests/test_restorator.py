@@ -4,6 +4,9 @@ Nothing here needs Ray. correct_batch is a plain function and the CLI builds the
 Ray worker around it, so the matching logic is testable on its own.
 """
 
+import csv
+from pathlib import Path
+
 import pytest
 
 from restorator import (
@@ -188,3 +191,52 @@ def test_correct_batch_preserves_order_and_length(index, flat):
 
 def test_correct_batch_on_an_empty_list(index, flat):
     assert correct_batch([], index, flat) == []
+
+
+# --- the shipped reference list ---------------------------------------------
+
+
+REFERENCE_CSV = Path(__file__).resolve().parent.parent / "surnames_all.csv"
+
+
+def shipped_names():
+    with REFERENCE_CSV.open(encoding="utf-8") as f:
+        return [row["column1"] for row in csv.DictReader(f) if row.get("column1")]
+
+
+# The most common Czech surnames, male and female. A reference list that cannot
+# restore these cannot restore a real dataset either.
+COMMON = [
+    "Novák", "Nováková", "Svoboda", "Svobodová", "Novotný", "Novotná",
+    "Dvořák", "Dvořáková", "Černý", "Černá", "Procházka", "Procházková",
+    "Kučera", "Kučerová", "Veselý", "Veselá", "Horák", "Horáková",
+    "Němec", "Němcová", "Marek", "Marková", "Král", "Králová",
+]
+
+
+@pytest.mark.parametrize("name", COMMON)
+def test_a_common_surname_is_in_the_reference(name):
+    assert name in set(shipped_names())
+
+
+@pytest.mark.parametrize(
+    ("stripped", "expected"),
+    [
+        ("Novak", "Novák"),
+        ("Novakova", "Nováková"),
+        ("Dvorak", "Dvořák"),
+        ("Kucera", "Kučera"),
+        ("Svobodova", "Svobodová"),
+        ("Cerny", "Černý"),
+    ],
+)
+def test_a_common_surname_is_restored_from_its_ascii_form(stripped, expected):
+    """The reference used to hold Novak and Novaková but neither correct form,
+    so the two most common Czech surnames came back still wrong."""
+    names = shipped_names()
+    assert correct_name(stripped, build_index(names), names) == expected
+
+
+def test_the_reference_holds_no_duplicate_rows():
+    names = shipped_names()
+    assert len(names) == len(set(names))

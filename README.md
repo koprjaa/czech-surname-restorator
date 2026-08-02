@@ -71,10 +71,11 @@ The matching logic lives in `restorator.py` and imports nothing from Ray. `main.
 
 ## Limits
 
-The shipped reference list is `surnames_all.csv`, with 119,237 entries compiled from open Czech onomastic sources. Two properties of that data bound what the tool can do.
+The shipped reference list is `surnames_all.csv`, with 119,239 entries compiled from open Czech onomastic sources.
 
-- **`Novák` and `Nováková` are not in it.** Those are the two most common Czech surnames. A name the list does not hold cannot be restored from it, so `Novakova` comes back as `Novaková` and not `Nováková`. Check the list before you trust a result.
-- **29,645 entries, about 24 percent, carry no mark at all.** Some of those are genuine spellings and some are gaps. The tool cannot tell the two apart, so it assumes the input is stripped legacy data and prefers the marked spelling.
+About 24 percent of the entries carry no diacritic at all. Some of those are genuine spellings and some are gaps in the source. The tool cannot tell the two apart, so it assumes the input is stripped legacy data and prefers the marked spelling. That assumption is what makes the tool work, and it is also its main limit: a name that really is spelled without marks gets marks added.
+
+The list is not authoritative. It once held `Novak` and `Novaková` but neither `Novák` nor `Nováková`, so the two most common Czech surnames came back still wrong. That is fixed and there is a test over the twenty-four most common names, but a rarer name can carry the same kind of error. Check a sample against the list before trusting a run.
 
 Other limits:
 
