@@ -82,6 +82,7 @@ Other limits:
 - The whole index must fit in memory. A much larger reference list needs an on-disk structure.
 - A name missing from the reference list stays as it came in. There is no character level model to guess from.
 - Only the last whitespace separated token is treated as the surname. A compound surname written with a space is not handled.
+- Ray publishes Windows wheels for Python 3.10 to 3.12 only. On Windows with 3.13 the install fails, so use 3.12 there. Linux and macOS are fine on 3.13.
 
 ## Development
 
