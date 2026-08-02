@@ -1,33 +1,33 @@
 # czech-surname-restorator
 
-Restores diacritics to Czech surnames in large legacy datasets. `Dvorak` becomes `Dvořák`, `Kucera` becomes `Kučera`, `Kopriva` becomes `Kopřiva`. It uses Ray for distribution and rapidfuzz for the fuzzy stages.
+Restores diacritics to Czech surnames in large legacy datasets. `Dvorak` becomes `Dvořák`, `Kucera` becomes `Kučera`, `Kopriva` becomes `Kopřiva`. It uses Ray for distribution and rapidfuzz for the fallback search.
 
 ![python](https://img.shields.io/badge/python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)
 ![license](https://img.shields.io/badge/license-MIT-A31F34?style=flat-square)
-![status](https://img.shields.io/badge/status-prototype-lightgrey?style=flat-square)
+![status](https://img.shields.io/badge/status-beta-22863A?style=flat-square)
+[![ci](https://github.com/koprjaa/czech-surname-restorator/actions/workflows/ci.yml/badge.svg)](https://github.com/koprjaa/czech-surname-restorator/actions/workflows/ci.yml)
 
 ## What it does
 
-Banks, insurers, and public sector databases often store Czech names without diacritics. Either the form accepted ASCII only, or the data came from a system that did. Restoring the marks by hand across millions of rows is not practical. A plain dictionary lookup fails on typos, abbreviations, and hyphenated compounds.
+Banks, insurers, and public sector databases often store Czech names without diacritics. Either the form accepted ASCII only, or the data came from a system that did. Restoring the marks by hand across millions of rows is not practical. A plain dictionary lookup fails on typos and on names the reference list does not hold.
 
-This tool runs a three stage match. Each stage is more expensive than the one before it, so most names never reach the last stage.
+The tool runs two stages. The first is cheap and answers almost every name. The second is expensive and only runs when the first finds nothing.
 
 ```
-index key:  (grapheme_count, normalized) -> {correct_form_1, correct_form_2}
+index key:  (grapheme_count, ascii_lowercase) -> [every known spelling]
 
 input name
     |
     v
-Stage 1  Exact.         O(1) lookup in the index. One candidate ends the search.
-    |    ambiguous
+Stage 1  Index hit.     O(1) lookup. Take the spelling with the most marks.
+    |    key not found
     v
-Stage 2  Local fuzzy.   rapidfuzz over the small candidate set from stage 1.
-    |    no match
-    v
-Stage 3  Global fuzzy.  rapidfuzz over the full reference database. Last resort.
+Stage 2  Global fuzzy.  rapidfuzz over the whole reference list. Last resort.
 ```
 
-The index goes into the Ray object store once. Every worker reads the same copy, so the reference dictionary is not copied per process.
+Every spelling under one index key shares the same ASCII form and the same length, so they are the same name written with different marks. Scoring them against each other adds nothing, and the tool takes the richest spelling instead. That choice matters, because about a quarter of the reference list carries no marks at all. Scoring would let the plain spelling win against a plain input by exact match, and restore nothing.
+
+The index goes into the Ray object store once. Every worker reads the same copy, so the reference list is not copied per process.
 
 ## Install
 
@@ -38,25 +38,58 @@ uv pip install -r requirements.txt
 
 ## Use
 
-Place `surnames_all.csv` and `input_names.csv` in the project root. The input file needs a `Person_Name` column.
-
 ```bash
-python main.py
+python main.py input_names.csv -o corrected.csv
 ```
 
-The reference database ships with the repository. It holds about 60,000 surnames in 1.2 MB, compiled from open Czech onomastic sources.
+The input needs one column with the full name, `Person_Name` by default. The output keeps the original column and adds `given_name`, `surname`, `corrected_surname`, and `corrected_name`.
+
+```
+Person_Name,given_name,surname,corrected_surname,corrected_name
+Jan Dvorak,Jan,Dvorak,Dvořák,Jan Dvořák
+Petr Kucera,Petr,Kucera,Kučera,Petr Kučera
+```
+
+## Options
+
+| Flag | Default | Effect |
+|---|---|---|
+| `-o, --output` | `output_corrected.csv` | Where to write the result. |
+| `-r, --reference` | `surnames_all.csv` | Reference surname list. |
+| `--name-column` | `Person_Name` | Column holding the full name. |
+| `--reference-column` | `column1` | Column holding the reference surnames. |
+| `--chunk-size` | 10000 | Rows read at a time. |
+| `--batch-size` | 1000 | Names per Ray task. |
+| `--num-cpus` | all | CPUs given to Ray. |
+| `--log-file` | none | Also write the log to this file. |
 
 ## How it works
 
-`multiprocessing.Pool` would also work, but it copies the index into every worker. That wastes memory and adds fork time. The Ray object store gives every worker a zero copy shared memory reference instead. For a 60,000 row index this is a convenience. For a production sized index it is the reason the design works.
+`multiprocessing.Pool` would also work, but it copies the index into every worker. That wastes memory and adds fork time. The Ray object store gives every worker a zero copy shared memory reference instead. For a reference list this size it is a convenience. For a production sized one it is the reason the design works.
+
+The matching logic lives in `restorator.py` and imports nothing from Ray. `main.py` wraps it with `ray.remote` at run time. That keeps the library usable, and testable, without a cluster.
 
 ## Limits
 
-- No file output yet. The pipeline computes the corrections and logs them, but it does not write them anywhere. Add a `.to_csv()` or `.to_parquet()` call at the end of `main.py` before you use this in a data pipeline.
-- Paths are fixed in the source. There is no argument parser. Edit the file names in `main.py`.
-- The full index must fit in memory. A much larger reference database needs an on-disk structure.
-- Only names that exist in the reference database get corrected. There is no character level fallback for unknown names.
-- No tests.
+The shipped reference list is `surnames_all.csv`, with 119,237 entries compiled from open Czech onomastic sources. Two properties of that data bound what the tool can do.
+
+- **`Novák` and `Nováková` are not in it.** Those are the two most common Czech surnames. A name the list does not hold cannot be restored from it, so `Novakova` comes back as `Novaková` and not `Nováková`. Check the list before you trust a result.
+- **29,645 entries, about 24 percent, carry no mark at all.** Some of those are genuine spellings and some are gaps. The tool cannot tell the two apart, so it assumes the input is stripped legacy data and prefers the marked spelling.
+
+Other limits:
+
+- The whole index must fit in memory. A much larger reference list needs an on-disk structure.
+- A name missing from the reference list stays as it came in. There is no character level model to guess from.
+- Only the last whitespace separated token is treated as the surname. A compound surname written with a space is not handled.
+
+## Development
+
+```bash
+uv run --extra dev ruff check .
+uv run --extra dev pytest -q
+```
+
+CI runs both on Python 3.10, 3.11, and 3.12, on Linux and Windows. The test suite covers the matching logic and needs no Ray cluster.
 
 ## License
 
