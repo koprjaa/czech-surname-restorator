@@ -27,6 +27,8 @@ Stage 2  Global fuzzy.  rapidfuzz over the whole reference list. Last resort.
 
 Every spelling under one index key shares the same ASCII form and the same length, so they are the same name written with different marks. Scoring them against each other adds nothing, and the tool takes the richest spelling instead. That choice matters, because about a quarter of the reference list carries no marks at all. Scoring would let the plain spelling win against a plain input by exact match, and restore nothing.
 
+Richest means richest among the Czech spellings. The reference list also holds Slovak and Polish forms of shared surnames, and those often carry more marks. `Kral` groups with `Král`, `Kráĺ` and `Kráľ`, and the two Slovak forms win on mark count alone, so the most common Czech surname came back Slovak. A name is treated as Czech when every letter in it exists in the Czech alphabet. When only a non-Czech spelling is available the tool still returns it, because a foreign spelling beats no answer.
+
 The index goes into the Ray object store once. Every worker reads the same copy, so the reference list is not copied per process.
 
 ## Install
@@ -75,7 +77,9 @@ The shipped reference list is `surnames_all.csv`, with 119,239 entries compiled 
 
 About 24 percent of the entries carry no diacritic at all. Some of those are genuine spellings and some are gaps in the source. The tool cannot tell the two apart, so it assumes the input is stripped legacy data and prefers the marked spelling. That assumption is what makes the tool work, and it is also its main limit: a name that really is spelled without marks gets marks added.
 
-The list is not authoritative. It once held `Novak` and `Novaková` but neither `Novák` nor `Nováková`, so the two most common Czech surnames came back still wrong. That is fixed and there is a test over the twenty-four most common names, but a rarer name can carry the same kind of error. Check a sample against the list before trusting a run.
+The list is not authoritative. It once held `Novak` and `Novaková` but neither `Novák` nor `Nováková`, so the two most common Czech surnames came back still wrong. It also holds Slovak spellings that outscored the Czech ones, which turned `Kral` into `Kráľ`. Both are fixed and there are tests over the most common names, but a rarer name can carry the same kind of error. Check a sample against the list before trusting a run.
+
+Two real Czech surnames sharing one ASCII form cannot be told apart. `Horak` is both `Horák` and the rarer `Hořák`, and the tool returns `Hořák` because it carries more marks. `Urban` and `Urbán` collide the same way. Resolving these needs surname frequency data, which the reference list does not carry. Measured over the fifty-one most common surnames, the tool gets forty-eight right and loses the remaining three to this.
 
 Other limits:
 

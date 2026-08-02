@@ -24,6 +24,10 @@ GLOBAL_MATCH_THRESHOLD = 75
 # Candidates pulled from the full reference list before the threshold applies.
 GLOBAL_SEARCH_LIMIT = 5
 
+# Every letter Czech writes. Slovak adds a, l and r forms this set leaves out,
+# which is exactly how the Slovak spelling of Kral was winning.
+CZECH_LETTERS = frozenset("aábcčdďeéěfghiíjklmnňoópqrřsštťuúůvwxyýzž")
+
 
 def remove_diacritics(text: str) -> str:
     """Strip combining marks, so that Dvořák and Dvorak compare equal."""
@@ -94,18 +98,31 @@ def mark_count(name: str) -> int:
     return sum(1 for c in unicodedata.normalize("NFD", name) if unicodedata.combining(c))
 
 
+def is_czech_spelling(name: str) -> bool:
+    """True when every letter of the name exists in the Czech alphabet.
+
+    The reference list carries Slovak and Polish spellings of shared surnames.
+    They are not wrong, they are just not Czech, and this tool restores Czech.
+    """
+    return all(not ch.isalpha() or ch.lower() in CZECH_LETTERS for ch in name)
+
+
 def richest_spelling(candidates: list[str]) -> str:
-    """The candidate carrying the most combining marks.
+    """The Czech candidate carrying the most combining marks.
 
     Every candidate under one index key shares the same ASCII form and the same
     length, so they are spellings of one name and differ only in marks and case.
     Scoring them against each other adds nothing. About a quarter of the
     reference list is written without diacritics, so the plain spelling would
     otherwise win against the input by exact match and restore nothing.
-    Ordering by mark count picks the restored form and stays deterministic
-    whatever order the reference list arrived in.
+
+    Mark count alone is not enough. The list holds Kral, Král, Kráĺ and Kráľ, and
+    the two Slovak spellings carry the most marks, so the most common Czech
+    surname came back Slovak. Czech spellings are therefore preferred first, and
+    mark count only decides between them. Ties fall back to the string, so the
+    answer does not depend on the order the reference list arrived in.
     """
-    return max(candidates, key=lambda cand: (mark_count(cand), cand))
+    return max(candidates, key=lambda cand: (is_czech_spelling(cand), mark_count(cand), cand))
 
 
 def correct_name(name, index, all_reference_names) -> str:

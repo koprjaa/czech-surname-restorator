@@ -30,6 +30,7 @@ from restorator import (
     correct_name,
     grapheme_count,
     index_key,
+    is_czech_spelling,
     mark_count,
     merge_marks,
     remove_diacritics,
@@ -239,9 +240,27 @@ def test_a_common_surname_is_in_the_reference(name):
         ("Novak", "Novák"),
         ("Novakova", "Nováková"),
         ("Dvorak", "Dvořák"),
+        ("Dvorakova", "Dvořáková"),
         ("Kucera", "Kučera"),
+        ("Kucerova", "Kučerová"),
         ("Svobodova", "Svobodová"),
         ("Cerny", "Černý"),
+        ("Cerna", "Černá"),
+        ("Kral", "Král"),
+        ("Kralova", "Králová"),
+        ("Ruzicka", "Růžička"),
+        ("Kolar", "Kolář"),
+        ("Kolarova", "Kolářová"),
+        ("Cermak", "Čermák"),
+        ("Benes", "Beneš"),
+        ("Dolezal", "Doležal"),
+        ("Sedlacek", "Sedláček"),
+        ("Vlcek", "Vlček"),
+        ("Pospisil", "Pospíšil"),
+        ("Navratil", "Navrátil"),
+        ("Jelinek", "Jelínek"),
+        ("Hajek", "Hájek"),
+        ("Nemcova", "Němcová"),
     ],
 )
 def test_a_common_surname_is_restored_from_its_ascii_form(stripped, expected):
@@ -249,6 +268,43 @@ def test_a_common_surname_is_restored_from_its_ascii_form(stripped, expected):
     so the two most common Czech surnames came back still wrong."""
     names = shipped_names()
     assert correct_name(stripped, build_index(names), names) == expected
+
+
+# --- Czech spellings are preferred over the Slovak ones in the same list ------
+
+
+@pytest.mark.parametrize(
+    ("name", "czech"),
+    [("Král", True), ("Kráľ", False), ("Kráĺ", False), ("Králová", True), ("Kráľová", False),
+     ("Dvořák", True), ("Świerczyk", False), ("Novák", True), ("Smith", True)],
+)
+def test_is_czech_spelling(name, czech):
+    assert is_czech_spelling(name) is czech
+
+
+def test_a_slovak_spelling_does_not_win_on_mark_count():
+    """The list holds Kral, Král, Kráĺ and Kráľ. The two Slovak forms carry the
+    most marks, so ordering by marks alone returned Kráľ for the most common
+    Czech surname."""
+    assert richest_spelling(["Kral", "Král", "Kráĺ", "Kráľ"]) == "Král"
+    assert richest_spelling(["Kralová", "Králová", "Kráĺová", "Kráľová"]) == "Králová"
+
+
+def test_a_slovak_spelling_is_still_returned_when_it_is_the_only_one():
+    """Preferring Czech must not mean refusing to answer."""
+    assert richest_spelling(["Kráľ"]) == "Kráľ"
+
+
+def test_the_richest_czech_spelling_still_wins_among_czech_ones():
+    assert richest_spelling(["Cerny", "Černy", "Černý"]) == "Černý"
+
+
+def test_no_common_surname_comes_back_with_a_non_czech_letter():
+    names = shipped_names()
+    index = build_index(names)
+    for expected in COMMON:
+        got = correct_name(remove_diacritics(expected), index, names)
+        assert is_czech_spelling(got), f"{expected} restored as {got}"
 
 
 def test_the_reference_holds_no_duplicate_rows():
