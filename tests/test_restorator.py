@@ -1,3 +1,17 @@
+#
+# Project: czech-surname-restorator
+# File:    test_restorator.py
+#
+# Description:
+# Tests for the matching logic and for the surnames the shipped reference list has to cover.
+#
+# Author:
+# Jan Alexandr Kopřiva
+# jan.alexandr.kopriva@gmail.com
+#
+# License: MIT
+#
+
 """Tests for the surname diacritic restoration logic.
 
 Nothing here needs Ray. correct_batch is a plain function and the CLI builds the

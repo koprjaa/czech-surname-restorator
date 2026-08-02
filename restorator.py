@@ -1,10 +1,16 @@
-"""
-Project: Czech Surname Restorator
-File: restorator.py
-Description: Restores diacritics in Czech surnames using a reference list and fuzzy matching.
-Author: Jan Alexandr Kopřiva jan.alexandr.kopriva@gmail.com
-License: MIT
-"""
+#
+# Project: czech-surname-restorator
+# File:    restorator.py
+#
+# Description:
+# Restores diacritics to a Czech surname, by index lookup first and a fuzzy search over the whole reference list second.
+#
+# Author:
+# Jan Alexandr Kopřiva
+# jan.alexandr.kopriva@gmail.com
+#
+# License: MIT
+#
 
 import unicodedata
 

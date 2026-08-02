@@ -1,10 +1,16 @@
-"""
-Project: Czech Surname Restorator
-File: main.py
-Description: Command-line entry point. Reads a CSV of names and writes them back with diacritics.
-Author: Jan Alexandr Kopřiva jan.alexandr.kopriva@gmail.com
-License: MIT
-"""
+#
+# Project: czech-surname-restorator
+# File:    main.py
+#
+# Description:
+# Command line entry point: loads the reference list, spreads the work over Ray workers, and writes the corrected CSV.
+#
+# Author:
+# Jan Alexandr Kopřiva
+# jan.alexandr.kopriva@gmail.com
+#
+# License: MIT
+#
 
 import argparse
 import logging
