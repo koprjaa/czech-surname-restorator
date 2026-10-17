@@ -1,7 +1,7 @@
 [project]
 name = "czech-surname-restorator"
 version = "1.0.0"
-description = "Restore diacritics in Czech surnames using a reference list and fuzzy matching."
+description = "Restores diacritics to Czech surnames in CSV files."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
