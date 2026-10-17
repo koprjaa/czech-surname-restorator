@@ -58,19 +58,21 @@ def parse_args(argv=None) -> argparse.Namespace:
     )
     parser.add_argument("input", type=Path, help="CSV file with the names to correct")
     parser.add_argument(
-        "-o", "--output", type=Path, default=Path("output_corrected.csv"),
+        "-o",
+        "--output",
+        type=Path,
+        default=Path("output_corrected.csv"),
         help="where to write the result (default: output_corrected.csv)",
     )
     parser.add_argument(
-        "-r", "--reference", type=Path, default=Path("surnames_all.csv"),
+        "-r",
+        "--reference",
+        type=Path,
+        default=Path("surnames_all.csv"),
         help="reference surname list (default: surnames_all.csv)",
     )
-    parser.add_argument(
-        "--name-column", default="Person_Name", help="column holding the full name"
-    )
-    parser.add_argument(
-        "--reference-column", default="column1", help="column holding the reference surnames"
-    )
+    parser.add_argument("--name-column", default="Person_Name", help="column holding the full name")
+    parser.add_argument("--reference-column", default="column1", help="column holding the reference surnames")
     parser.add_argument("--chunk-size", type=int, default=10_000, help="rows read at a time")
     parser.add_argument("--batch-size", type=int, default=1_000, help="names per Ray task")
     parser.add_argument("--num-cpus", type=int, default=None, help="CPUs for Ray (default: all)")
@@ -112,9 +114,7 @@ def main(argv=None) -> int:
 
         rows_written = 0
         first_chunk = True
-        for chunk in pd.read_csv(
-            args.input, dtype=str, low_memory=False, chunksize=args.chunk_size
-        ):
+        for chunk in pd.read_csv(args.input, dtype=str, low_memory=False, chunksize=args.chunk_size):
             if args.name_column not in chunk.columns:
                 logger.error("Input has no column %r", args.name_column)
                 return 1
@@ -123,7 +123,7 @@ def main(argv=None) -> int:
             surnames = chunk["surname"].tolist()
 
             tasks = [
-                worker.remote(surnames[i: i + args.batch_size], index_ref, reference_ref)
+                worker.remote(surnames[i : i + args.batch_size], index_ref, reference_ref)
                 for i in range(0, len(surnames), args.batch_size)
             ]
             corrected = [name for batch in ray.get(tasks) for name in batch]
@@ -132,8 +132,11 @@ def main(argv=None) -> int:
             chunk["corrected_name"] = chunk["given_name"] + " " + chunk["corrected_surname"]
 
             chunk.to_csv(
-                args.output, mode="w" if first_chunk else "a",
-                header=first_chunk, index=False, encoding="utf-8",
+                args.output,
+                mode="w" if first_chunk else "a",
+                header=first_chunk,
+                index=False,
+                encoding="utf-8",
             )
             first_chunk = False
             rows_written += len(chunk)

@@ -222,10 +222,30 @@ def shipped_names():
 # The most common Czech surnames, male and female. A reference list that cannot
 # restore these cannot restore a real dataset either.
 COMMON = [
-    "Novák", "Nováková", "Svoboda", "Svobodová", "Novotný", "Novotná",
-    "Dvořák", "Dvořáková", "Černý", "Černá", "Procházka", "Procházková",
-    "Kučera", "Kučerová", "Veselý", "Veselá", "Horák", "Horáková",
-    "Němec", "Němcová", "Marek", "Marková", "Král", "Králová",
+    "Novák",
+    "Nováková",
+    "Svoboda",
+    "Svobodová",
+    "Novotný",
+    "Novotná",
+    "Dvořák",
+    "Dvořáková",
+    "Černý",
+    "Černá",
+    "Procházka",
+    "Procházková",
+    "Kučera",
+    "Kučerová",
+    "Veselý",
+    "Veselá",
+    "Horák",
+    "Horáková",
+    "Němec",
+    "Němcová",
+    "Marek",
+    "Marková",
+    "Král",
+    "Králová",
 ]
 
 
@@ -275,8 +295,17 @@ def test_a_common_surname_is_restored_from_its_ascii_form(stripped, expected):
 
 @pytest.mark.parametrize(
     ("name", "czech"),
-    [("Král", True), ("Kráľ", False), ("Kráĺ", False), ("Králová", True), ("Kráľová", False),
-     ("Dvořák", True), ("Świerczyk", False), ("Novák", True), ("Smith", True)],
+    [
+        ("Král", True),
+        ("Kráľ", False),
+        ("Kráĺ", False),
+        ("Králová", True),
+        ("Kráľová", False),
+        ("Dvořák", True),
+        ("Świerczyk", False),
+        ("Novák", True),
+        ("Smith", True),
+    ],
 )
 def test_is_czech_spelling(name, czech):
     assert is_czech_spelling(name) is czech

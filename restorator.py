@@ -76,11 +76,8 @@ def apply_diacritics(original: str, reference: str) -> str:
     original_clusters = re.findall(r"\X", unicodedata.normalize("NFD", original))
     reference_clusters = re.findall(r"\X", unicodedata.normalize("NFD", reference))
 
-    merged = [
-        merge_marks(o, r)
-        for o, r in zip(original_clusters, reference_clusters, strict=False)
-    ]
-    merged.extend(original_clusters[len(reference_clusters):])
+    merged = [merge_marks(o, r) for o, r in zip(original_clusters, reference_clusters, strict=False)]
+    merged.extend(original_clusters[len(reference_clusters) :])
     return unicodedata.normalize("NFC", "".join(merged))
 
 
@@ -140,9 +137,7 @@ def correct_name(name, index, all_reference_names) -> str:
     if candidates:
         return apply_diacritics(name, richest_spelling(candidates))
 
-    for candidate, score, _ in process.extract(
-        name, all_reference_names, limit=GLOBAL_SEARCH_LIMIT
-    ):
+    for candidate, score, _ in process.extract(name, all_reference_names, limit=GLOBAL_SEARCH_LIMIT):
         if score >= GLOBAL_MATCH_THRESHOLD:
             return apply_diacritics(name, candidate)
     return name
