@@ -26,25 +26,15 @@ czech-surname-restorator input_names.csv -o corrected.csv
 czech-surname-restorator input_names.csv --reference surnames_all.csv --num-cpus 4
 ```
 
-The input needs one column with the full name (`Person_Name` by default, change it with `--name-column`). The output keeps all columns and adds `given_name`, `surname`, `corrected_surname` and `corrected_name`, in that order. Existing columns with those names are overwritten in their original positions.
+The input needs one column with the full name (`Person_Name` by default, change it with `--name-column`). The output keeps all columns and adds `given_name`, `surname`, `corrected_surname` and `corrected_name`.
 
 ```csv
 Person_Name,given_name,surname,corrected_surname,corrected_name
 Jan Dvorak,Jan,Dvorak,Dvořák,Jan Dvořák
 ```
 
-| Argument | Default | Meaning |
-| --- | --- | --- |
-| `input` | Required | Input CSV path |
-| `-o`, `--output` | `output_corrected.csv` | Output CSV path |
-| `-r`, `--reference` | `surnames_all.csv` | Reference CSV path |
-| `--name-column` | `Person_Name` | Full-name column |
-| `--reference-column` | `column1` | Reference surname column |
-| `--chunk-size` | `10000` | Rows processed per chunk |
-| `--batch-size` | `1000` | Names per worker task |
-| `--num-cpus` | All available CPUs | Maximum concurrent worker threads |
-| `--log-file` | None | Append UTF-8 logs to this file as well as stderr |
-| `-h`, `--help` | | Display help |
+
+Run `czech-surname-restorator --help` for all options.
 
 Run `czech-surname-restorator --help` for details. Positive integer sizes are required. Exit status is 0 for success, 1 for processing errors, and 2 for invalid arguments. Successful processing writes no stdout output.
 
