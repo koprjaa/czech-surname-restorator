@@ -2,36 +2,87 @@
 
 Restores diacritics to Czech surnames in CSV files.
 
-[![ci](https://github.com/koprjaa/czech-surname-restorator/actions/workflows/ci.yml/badge.svg)](https://github.com/koprjaa/czech-surname-restorator/actions/workflows/ci.yml)
-![license](https://img.shields.io/badge/license-MIT-A31F34?style=flat-square)
+[![CI](https://github.com/koprjaa/czech-surname-restorator/actions/workflows/ci.yml/badge.svg)](https://github.com/koprjaa/czech-surname-restorator/actions/workflows/ci.yml)
+![License](https://img.shields.io/badge/license-MIT-A31F34?style=flat-square)
 
 `Dvorak` becomes `Dvořák`, `Kucera` becomes `Kučera`, `Kopriva` becomes `Kopřiva`. Legacy databases at banks, insurers and public bodies often hold names as plain ASCII, and fixing millions of rows by hand is not practical.
 
-The tool assumes the input is stripped data, so a surname that really is spelled without marks gets marks added. Two real surnames with one ASCII form (`Horák` and `Hořák`) cannot be told apart. A name missing from the reference list stays unchanged. Only the last whitespace-separated token counts as the surname.
+The tool assumes the input is stripped data, so a surname that really is spelled without marks gets marks added. Two real surnames with one ASCII form (`Horák` and `Hořák`) cannot be told apart. A name missing from the reference list goes through a fuzzy search and stays unchanged if nothing is close enough. Only the last whitespace-separated token counts as the surname.
 
 ## Install
 
+Install the current stable Rust toolchain, then run from the project directory:
+
 ```bash
-uv venv
-uv pip install -r requirements.txt
+cargo install --path . --locked
 ```
 
-Python 3.10 or newer. On Windows, Ray wheels exist only for Python 3.10 to 3.12.
+The reference list is data, not an embedded asset. Keep `surnames_all.csv` in the working directory or specify its location with `--reference`.
 
 ## Use
 
 ```bash
-python main.py input_names.csv -o corrected.csv
+czech-surname-restorator input_names.csv -o corrected.csv
+czech-surname-restorator input_names.csv --reference surnames_all.csv --num-cpus 4
 ```
 
-The input needs one column with the full name (`Person_Name` by default, change it with `--name-column`). The output keeps it and adds `given_name`, `surname`, `corrected_surname` and `corrected_name`.
+The input needs one column with the full name (`Person_Name` by default, change it with `--name-column`). The output keeps all columns and adds `given_name`, `surname`, `corrected_surname` and `corrected_name`, in that order. Existing columns with those names are overwritten in their original positions.
 
-```
+```csv
 Person_Name,given_name,surname,corrected_surname,corrected_name
 Jan Dvorak,Jan,Dvorak,Dvořák,Jan Dvořák
 ```
 
-Run `python main.py --help` for the other options.
+| Argument | Default | Meaning |
+| --- | --- | --- |
+| `input` | Required | Input CSV path |
+| `-o`, `--output` | `output_corrected.csv` | Output CSV path |
+| `-r`, `--reference` | `surnames_all.csv` | Reference CSV path |
+| `--name-column` | `Person_Name` | Full-name column |
+| `--reference-column` | `column1` | Reference surname column |
+| `--chunk-size` | `10000` | Rows processed per chunk |
+| `--batch-size` | `1000` | Names per worker task |
+| `--num-cpus` | All available CPUs | Maximum concurrent worker threads |
+| `--log-file` | None | Append UTF-8 logs to this file as well as stderr |
+| `-h`, `--help` | | Display help |
+
+Run `czech-surname-restorator --help` for details. Positive integer sizes are required. Exit status is 0 for success, 1 for processing errors, and 2 for invalid arguments. Successful processing writes no stdout output.
+
+CSV uses UTF-8, commas, double-quoted escaping, and platform record terminators (LF on Unix, CRLF on Windows). Input BOMs and quoted multiline fields are supported. Missing tokens follow the original pandas defaults: empty string, `#N/A`, `#N/A N/A`, `#NA`, `-1.#IND`, `-1.#QNAN`, `-NaN`, `-nan`, `1.#IND`, `1.#QNAN`, `<NA>`, `N/A`, `NA`, `NULL`, `NaN`, `None`, `n/a`, `nan`, `null`. They are written as empty fields; missing name components propagate to an empty corrected full name. Short records are padded. Blank physical lines are skipped, while quoted whitespace is preserved. Duplicate column names receive numeric suffixes; unnamed columns become `Unnamed: N`.
+
+Reference names are sorted and grouped by grapheme count and lowercase, decomposed spelling with combining marks removed. Czech spellings take priority, then the greatest combining-mark count, then the lexicographically greatest spelling. Marks already supplied by the user survive. Base letters and case are preserved: an uppercase base does not acquire marks from a lowercase reference base. Fuzzy ties retain the first candidate in the flattened index order.
+
+There are no network requests, retries, timeouts, rate limits, User-Agents, API keys, configuration files, or application-specific environment variables.
+
+## Development
+
+```bash
+cargo build --release --locked
+cargo test --locked
+cargo clippy --all-targets -- -D warnings
+cargo fmt --check
+```
+
+CI runs formatting, Clippy and offline application tests on Ubuntu and Windows. Tests cover every original matching/reference test case, plus CLI behavior and byte-level CSV output. No test contacts a live website. Cargo itself needs registry access for dependencies on the first build.
+
+Direct dependencies each have one purpose: `clap` parses the CLI; `csv` streams CSV; `unicode-normalization` handles canonical decomposition, composition and combining classes; `unicode-segmentation` handles graphemes; `unicode-general-category` matches Python's letter-category checks; `chrono` supplies local, millisecond log timestamps. Concurrency, fuzzy scoring, tests and filesystem operations use the standard library. `Cargo.lock` pins the build.
+
+## Changes from the Python version
+
+- The executable replaces `python main.py`; Rust library functions replace Python imports. No Python, pandas, Ray, regex or RapidFuzz runtime is needed. Rust `Value` explicitly represents text, null and numeric passthrough values; arbitrary Python objects have no direct Rust equivalent.
+- Native scoped worker threads replace Ray processes. `--batch-size` and `--num-cpus` retain their batch and concurrency meanings, and output order is preserved. Workers are created for each chunk; Ray startup/shutdown messages, dashboard, cluster behavior and Ray-specific environment configuration no longer exist. Processing times and memory use differ.
+- CLI help, usage and argument diagnostics are generated by Clap rather than argparse. Defaults, option names, unambiguous long-option abbreviations and normal exit codes are retained. Invalid zero/negative sizes and CPU counts now fail immediately with status 2, instead of reaching Ray/pandas errors or losing rows. Regression tests cover this validation.
+- Output paths resolving to the input or reference path are rejected with status 1 before output creation. The original could truncate its input or destroy the reference. Regression tests verify that both files survive.
+- Records containing more fields than their header are rejected with status 1. The original could silently use leading fields as an implicit index and then discard them from output. Short records still receive empty fields. Tests cover both cases.
+- Processing failures use a timestamped English error and status 1 instead of Python tracebacks. CSV parser diagnostic text differs. A failure after output creation can leave a partial output, including a header; output is not transactional. An unterminated quoted field is rejected. Log-file opening failures report the operating-system error on stderr.
+- WRatio is implemented locally with normalized indel similarity, token sorting/sets and partial alignment, preserving case-sensitive scoring, the threshold and first-candidate tie order. Partial alignment exhaustively checks overlaps for all lengths, rather than using RapidFuzz's documented long-needle heuristic for strings over 64 code points. For such long strings it can find a better match. Only the best candidate is retained, since none of the other four original search results can change the answer. Tests cover the scoring branches, threshold, fallback and ties.
+- CSV input preserves embedded NUL characters instead of pandas' C parser truncating fields at a NUL. Unicode classification, normalization and grapheme boundaries follow the Unicode versions supplied by the locked Rust dependencies, rather than the installed Python/regex versions. These differences can affect unusual Unicode text; ordinary Czech names retain their original behavior.
+
+The reference data and LICENSE are unchanged. There are no other intentional application behavior changes.
+
+## Origin
+
+Project and original implementation by Jan Alexandr Kopřiva: [czech-surname-restorator](https://github.com/koprjaa/czech-surname-restorator).
 
 ## License
 

@@ -1,9 +1,13 @@
-# IDE files
+/target/
 .idea/
 *.iml
 .vscode/
-
-# Python
+*.log
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+output_corrected.csv
 __pycache__/
 *.py[cod]
 *$py.class
@@ -24,28 +28,11 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-
-# Virtual environments
 venv/
 env/
 ENV/
-
-# Logs
-*.log
 name_correction.log
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Temporary files
-*.tmp
-*.temp
-
-# Tooling caches
 .pytest_cache/
 .ruff_cache/
 uv.lock
 .venv/
-name_correction.log
-output_corrected.csv
