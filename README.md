@@ -70,9 +70,6 @@ Direct dependencies each have one purpose: `clap` parses the CLI; `csv` streams 
 
 The reference data and LICENSE are unchanged. There are no other intentional application behavior changes.
 
-## Origin
-
-Project and original implementation by Jan Alexandr Kopřiva: [czech-surname-restorator](https://github.com/koprjaa/czech-surname-restorator).
 
 ## License
 
