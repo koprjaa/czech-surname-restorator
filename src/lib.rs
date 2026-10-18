@@ -112,7 +112,7 @@ pub fn richest_spelling(candidates: &[String]) -> &str {
 }
 
 fn ratio(a: &[char], b: &[char]) -> f64 {
-    if a.is_empty() && b.is_empty() {
+    if a == b {
         return 100.0;
     }
     let mut row = vec![0usize; b.len() + 1];
@@ -134,6 +134,10 @@ fn partial_ratio(a: &[char], b: &[char]) -> f64 {
     let (short, long) = if a.len() <= b.len() { (a, b) } else { (b, a) };
     if short.is_empty() {
         return if long.is_empty() { 100.0 } else { 0.0 };
+    }
+    // Avoid quadratic alignment work when the shorter input is a literal substring.
+    if long.windows(short.len()).any(|window| window == short) {
+        return 100.0;
     }
     let mut best: f64 = 0.0;
     // An optimal local alignment may overlap either edge of the longer string.
@@ -231,7 +235,7 @@ pub fn weighted_ratio(a: &str, b: &str) -> f64 {
     }
 }
 pub fn correct_name(name: &str, index: &Index, all: &[String]) -> String {
-    if let Some(candidates) = index.get(&index_key(name)) {
+    if let Some(candidates) = index.get(&index_key(name)).filter(|v| !v.is_empty()) {
         return apply_diacritics(name, richest_spelling(candidates));
     }
     if name.is_empty() || all.is_empty() {

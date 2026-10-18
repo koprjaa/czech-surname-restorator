@@ -53,9 +53,36 @@ struct Args {
     log_file: Option<PathBuf>,
 }
 fn positive(s: &str) -> std::result::Result<usize, String> {
-    s.parse::<usize>()
+    // Python's int() accepts Unicode decimal digits and underscores between digits.
+    const DECIMAL_ZEROS: &[u32] = &[
+        0x30, 0x660, 0x6f0, 0x7c0, 0x966, 0x9e6, 0xa66, 0xae6, 0xb66, 0xbe6, 0xc66, 0xce6, 0xd66,
+        0xde6, 0xe50, 0xed0, 0xf20, 0x1040, 0x1090, 0x17e0, 0x1810, 0x1946, 0x19d0, 0x1a80, 0x1a90,
+        0x1b50, 0x1bb0, 0x1c40, 0x1c50, 0xa620, 0xa8d0, 0xa900, 0xa9d0, 0xa9f0, 0xaa50, 0xabf0,
+        0xff10, 0x104a0, 0x10d30, 0x11066, 0x110f0, 0x11136, 0x111d0, 0x112f0, 0x11450, 0x114d0,
+        0x11650, 0x116c0, 0x11730, 0x118e0, 0x11950, 0x11c50, 0x11d50, 0x11da0, 0x16a60, 0x16ac0,
+        0x16b50, 0x1d7ce, 0x1d7d8, 0x1d7e2, 0x1d7ec, 0x1d7f6, 0x1e140, 0x1e2f0, 0x1e950, 0x1fbf0,
+    ];
+    let trimmed = s.trim().strip_prefix('+').unwrap_or(s.trim());
+    let mut digits = String::new();
+    let mut previous_digit = false;
+    for c in trimmed.chars() {
+        if c == '_' && previous_digit {
+            previous_digit = false;
+            continue;
+        }
+        let digit = DECIMAL_ZEROS
+            .iter()
+            .find_map(|&zero| (c as u32).checked_sub(zero).filter(|&n| n < 10));
+        let Some(digit) = digit else {
+            return Err("must be a positive integer".into());
+        };
+        digits.push(char::from(b'0' + digit as u8));
+        previous_digit = true;
+    }
+    digits
+        .parse::<usize>()
         .ok()
-        .filter(|&n| n > 0)
+        .filter(|&n| n > 0 && previous_digit)
         .ok_or_else(|| "must be a positive integer".into())
 }
 struct Logger(Option<File>);
@@ -65,7 +92,7 @@ impl Logger {
             "{} - {level} - {message}\n",
             Local::now().format("%Y-%m-%d %H:%M:%S,%3f")
         );
-        eprint!("{line}");
+        let _ = std::io::stderr().write_all(line.as_bytes());
         if let Some(file) = &mut self.0 {
             let _ = file.write_all(line.as_bytes());
         }
@@ -114,7 +141,20 @@ impl Read for BlankLines {
                 return Ok(n);
             }
             let mut line = Vec::new();
-            if self.input.read_until(b'\n', &mut line)? == 0 {
+            loop {
+                let available = self.input.fill_buf()?;
+                if available.is_empty() {
+                    break;
+                }
+                let end = available.iter().position(|b| matches!(b, b'\r' | b'\n'));
+                let count = end.map_or(available.len(), |i| i + 1);
+                line.extend_from_slice(&available[..count]);
+                self.input.consume(count);
+                if end.is_some() {
+                    break;
+                }
+            }
+            if line.is_empty() {
                 if self.quoted {
                     return Err(std::io::Error::new(
                         std::io::ErrorKind::InvalidData,
@@ -231,17 +271,17 @@ fn parallel_correct(
     all: &[String],
     batch: usize,
     cpus: usize,
-) -> Vec<String> {
+) -> Result<Vec<String>> {
     let batches: Vec<_> = names.chunks(batch).collect();
     let workers = cpus.min(batches.len());
     if workers == 0 {
-        return Vec::new();
+        return Ok(Vec::new());
     }
     std::thread::scope(|scope| {
-        let handles: Vec<_> = (0..workers)
+        let handles = (0..workers)
             .map(|worker| {
                 let batches = &batches;
-                scope.spawn(move || {
+                std::thread::Builder::new().spawn_scoped(scope, move || {
                     (worker..batches.len())
                         .step_by(workers)
                         .map(|i| {
@@ -256,21 +296,34 @@ fn parallel_correct(
                         .collect::<Vec<_>>()
                 })
             })
-            .collect();
+            .collect::<std::io::Result<Vec<_>>>()?;
         let mut result = vec![Vec::new(); batches.len()];
         for handle in handles {
-            for (i, values) in handle.join().expect("worker panicked") {
+            for (i, values) in handle.join().map_err(|_| "Surname worker panicked")? {
                 result[i] = values;
             }
         }
-        result.into_iter().flatten().collect()
+        Ok(result.into_iter().flatten().collect())
     })
 }
 fn same_path(a: &Path, b: &Path) -> bool {
-    if let (Ok(a), Ok(b)) = (a.canonicalize(), b.canonicalize()) {
-        return a == b;
+    // File identity also catches hard links, whose canonical paths differ.
+    if same_file::is_same_file(a, b).unwrap_or(false) {
+        return true;
     }
-    false
+    let absolute = |path: &Path| {
+        path.canonicalize().ok().or_else(|| {
+            Some(
+                path.parent()
+                    .filter(|p| !p.as_os_str().is_empty())
+                    .unwrap_or(Path::new("."))
+                    .canonicalize()
+                    .ok()?
+                    .join(path.file_name()?),
+            )
+        })
+    };
+    matches!((absolute(a), absolute(b)), (Some(a), Some(b)) if a == b)
 }
 fn run(args: &Args, log: &mut Logger) -> Result<bool> {
     if !args.input.exists() {
@@ -362,14 +415,7 @@ fn run(args: &Args, log: &mut Logger) -> Result<bool> {
         });
         positions.push(pos);
     }
-    let mut output = csv::WriterBuilder::new()
-        .terminator(if cfg!(windows) {
-            csv::Terminator::CRLF
-        } else {
-            csv::Terminator::Any(b'\n')
-        })
-        .from_path(&args.output)?;
-    output.write_record(&columns)?;
+    let mut output = None;
     let mut records = input.records();
     let mut total = 0;
     loop {
@@ -386,7 +432,23 @@ fn run(args: &Args, log: &mut Logger) -> Result<bool> {
             row.resize(columns.len(), String::new());
             chunk.push(row);
         }
+        if output.is_none() {
+            let mut writer = csv::WriterBuilder::new()
+                .terminator(if cfg!(windows) {
+                    csv::Terminator::CRLF
+                } else {
+                    csv::Terminator::Any(b'\n')
+                })
+                .from_path(&args.output)?;
+            writer.write_record(&columns)?;
+            output = Some(writer);
+        }
+        let output = output.as_mut().expect("output initialized above");
         if chunk.is_empty() {
+            if total == 0 {
+                log.log("INFO", "Wrote 0 rows so far");
+            }
+            output.flush()?;
             break;
         }
         for row in &mut chunk {
@@ -409,7 +471,7 @@ fn run(args: &Args, log: &mut Logger) -> Result<bool> {
             args.batch_size,
             args.num_cpus
                 .unwrap_or_else(|| std::thread::available_parallelism().map_or(1, usize::from)),
-        );
+        )?;
         for (mut row, corrected) in chunk.into_iter().zip(corrected) {
             row[positions[2]] = corrected;
             row[positions[3]] = if row[positions[0]].is_empty() || row[positions[2]].is_empty() {
@@ -423,7 +485,6 @@ fn run(args: &Args, log: &mut Logger) -> Result<bool> {
         output.flush()?;
         log.log("INFO", &format!("Wrote {total} rows so far"));
     }
-    output.flush()?;
     log.log(
         "INFO",
         &format!(
@@ -436,6 +497,17 @@ fn run(args: &Args, log: &mut Logger) -> Result<bool> {
 }
 fn main() {
     let args = Args::parse();
+    if args.log_file.as_ref().is_some_and(|path| {
+        [&args.input, &args.reference, &args.output]
+            .iter()
+            .any(|other| same_path(path, other))
+    }) {
+        let _ = writeln!(
+            std::io::stderr(),
+            "Log file must differ from the input, reference and output files"
+        );
+        std::process::exit(1);
+    }
     let file = args
         .log_file
         .as_ref()
@@ -444,7 +516,7 @@ fn main() {
     let mut log = match file {
         Ok(f) => Logger(f),
         Err(e) => {
-            eprintln!("{e}");
+            let _ = writeln!(std::io::stderr(), "{e}");
             std::process::exit(1)
         }
     };

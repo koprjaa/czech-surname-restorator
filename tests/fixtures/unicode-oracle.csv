@@ -1,0 +1,211 @@
+original,reference,removed,graphemes,key,merged,applied,marks,czech
+,ř,,0,,ř,,0,true
+ř,,r,1,r,ř,ř,1,true
+DVORAK,Dvořák,DVORAK,6,dvorak,DVORAKvořák,DVORAK,0,true
+ŕ,ř,r,1,r,ŕ̌,ŕ̌,1,true
+a͏,á,a͏,1,a͏,a͏́,a͏́,0,true
+👩‍👩‍👧‍👧,👩,👩‍👩‍👧‍👧,1,👩‍👩‍👧‍👧,👩‍👩‍👧‍👧,👩‍👩‍👧‍👧,0,true
+JanDvorak,Dvořák,JanDvorak,10,jandvorak,JanDvorak,JanDvorak,0,true
+İ,i,I,1,i,İ,İ,1,false
+ΟΣ,οσ,ΟΣ,2,ος,ΟΣ,ΟΣ,0,false
+क्‍ष,क्ष,क‍ष,1,क‍ष,क्‍ष,क्‍ष,1,false
+	áíŘ,kİͅ͏ͅ👩͏ ͅ,	aiR,4,	air,	áíŘ,	áíŘ,3,true
+kř́aİkǨk,İͅa͏͏,kraIkKk,7,kraikkk,kř́aİkǨk,kř́aİkǨk,4,false
+́👩́‍́ͅí,͏Ř	Říaİ,👩‍i,3,👩‍i,́👩́‍́ͅí,́👩́‍́ͅí,5,true
+́👩řříí͏KaaŘ,İİ́	K,👩rrii͏KaaR,10,👩rrii͏kaar,́👩řříí͏KaaŘ,́👩řříí͏KaaŘ,6,true
+	ͅŘKí‍ á	Řá,ͅ👩İͅřaͅ‍,	RKi‍ a	Ra,10,	rki‍ a	ra,	ͅŘKí‍ á	Řá,	ͅŘKí‍ á	Řá,6,true
+Řaa👩k👩,áík	řak👩kK,Raa👩k👩,6,raa👩k👩,Řaa👩k👩,Řaa👩k👩,1,true
+́íř́,aí,ir,3,ir,́íř́,́íř́,4,true
+👩‍̌́í řḱíͅ,řkͅřař́a ,👩‍i rki,6,👩‍i rki,👩‍̌́í řḱíͅ,👩‍̌́í řḱíͅ,7,true
+ř	👩 íͅ͏̌í,	,r	👩 i͏i,6,r	👩 i͏i,ř	👩 íͅ͏̌í,ř	👩 íͅ͏̌í,5,true
+İ		íař,̌	ŘǎŘa,I		iar,6,i		iar,İ		íař,İ		íař,3,false
+ Řkí,‍́íͅK 👩́, Rki,4, rki, Řkí, Řkí,2,true
+	,́,	,1,	,	,	,0,true
+ͅ,Řáͅ‍,,1,,ͅ,ͅ,1,true
+áí‍Řa👩ͅík,İřͅͅ‍,ai‍Ra👩ik,7,ai‍ra👩ik,áí‍Řa👩ͅík,áí‍Řa👩ͅík,5,true
+ͅ͏ kŘİ👩í͏͏, ͅ	̌áákŘ́,͏ kRI👩i͏͏,7,͏ kri👩i͏͏,ͅ͏ kŘİ👩í͏͏,ͅ͏ kŘİ👩í͏͏,4,false
+a	kí	á,ͅk‍K řá͏‍řͅ,a	ki	a,6,a	ki	a,a	kí	á,a	kí	á͏‍,2,true
+aařaK,Ř 	̌͏Ḱ,aaraK,5,aarak,aařaK,aařaḰ,1,true
+křak‍ř͏,ř Kİ̌a👩̌👩K,krak‍r͏,5,krak‍r͏,křak‍ř͏,křak‍ř͏,2,true
+ákİííákŘ́ř, 👩ř́́ͅŘ̌,akIiiakRr,9,akiiiakrr,ákİííákŘ́ř,ákİííákŘ́ř,8,false
+͏,á̌k͏	,͏,1,͏,͏,͏,0,true
+Řİ	K á́,👩aK͏👩,RI	K a,6,ri	k a,Řİ	K á́,Řİ	K á́,4,false
+‍́,̌ͅ		İař,‍,1,‍,‍́,‍́,1,true
+k👩á‍,KͅKİİ́‍	‍á,k👩a‍,3,k👩a‍,k👩á‍,k👩á‍,1,true
+́ KK	İaí, , KK	Iai,8, kk	iai,́ KK	İaí,́ KK	İaí,3,false
+Ř,Řḱ,R,1,r,Řḱ,Ř,1,true
+řř,áa	̌Řáaͅ	ͅá,rr,2,rr,řř,řř,2,true
+ͅk,́ ř́ 	k,k,2,k,ͅk,ͅk,1,true
+‍‍	ͅ,íͅíİ̌‍řkířŘ,‍‍	,3,‍‍	,‍‍	ͅ,‍‍	ͅ,1,true
+ 	͏í͏‍‍Řř,İ, 	͏i͏‍‍Rr,6, 	͏i͏‍‍rr, 	͏í͏‍‍Řř, 	͏í͏‍‍Řř,3,true
+k͏ͅİ̌ř̌͏aKř,́‍	Ř,k͏Ir͏aKr,6,k͏ir͏akr,k͏ͅİ̌ř̌͏aKř,k͏ͅİ̌ř̌͏aKř,6,false
+á,Ř👩ͅͅ 	,a,1,a,á,á,1,true
+í áͅkk,Ř‍‍a͏́í‍́í,i akk,5,i akk,í áͅkk,í áͅkk,3,true
+,‍íííǨkḰ,,0,,‍íííǨkḰ,,0,true
+̌́‍á,👩👩í	í👩aͅ👩͏í,‍a,2,‍a,̌́‍á,̌́‍á,3,true
+Ḱ	 říř👩k,ařİř,K	 rir👩k,8,k	 rir👩k,Ḱ	 říř👩k,Ḱ	 říř👩k,4,true
+	👩 ͅ	̌  	,	k	İ‍ářİ́ří,	👩 	  	,8,	👩 	  	,	👩 ͅ	̌  	kİ‍ári,	👩 ͅ	̌  	,2,true
+́́,Ř	a‍,,1,,́́,́́,2,true
+‍́ ͅkͅͅ,👩‍říá,‍ k,3,‍ k,‍́ ͅkͅͅ,‍́ ͅkͅͅ,4,true
+👩͏K‍͏,,👩͏K‍͏,2,👩͏k‍͏,👩͏K‍͏,👩͏K‍͏,0,true
+	aͅkKřŘ á‍	,á,	akKrR a‍	,9,	akkrr a‍	,	aͅkKřŘ á‍	,	aͅkKřŘ á‍	,4,true
+,Kká áa👩,,0,,Kká áa👩,,0,true
+ř̌KřKíá	̌,K,rKrKia	,8,rkrkia	,ř̌KřKíá	̌,ř̌KřKíá	̌,6,true
+,	í 👩K	K,,0,,	í 👩K	K,,0,true
+,íaͅ aK,,0,,íaͅ aK,,0,true
+k‍á,Řaáa͏‍	́,k‍a,2,k‍a,k‍á,k‍á,1,true
+İ👩👩ͅİřİáá,👩̌ííaİİ👩͏,I👩👩IrIaa,8,i👩👩iriaa,İ👩👩ͅİřİáá,İ👩👩ͅİřİáá,7,false
+́á͏ ,ͅİ‍👩ḱ̌👩kͅa,a͏ ,3,a͏ ,́á͏ ,́á͏ ,2,true
+͏İí‍aKŘk,í,͏Ii‍aKRk,7,͏ii‍akrk,͏İí‍aKŘk,͏İí‍aKŘk,3,false
+͏		Ḱ  a,‍,͏		K  a,7,͏		k  a,͏		Ḱ  a,͏		Ḱ  a,1,true
+̌̌í,ř,i,2,i,̌̌í,̌̌í,3,true
+	,k͏İk ,	,1,	,	,	,0,true
+aŘřŘͅkí👩́👩a,́̌̌́		aͅ KK,aRrRki👩👩a,9,arrrki👩👩a,aŘřŘͅkí👩́👩a,aŘřŘͅkí👩́👩a,6,true
+‍👩İͅİ͏,áá		í‍	͏,‍👩II͏,4,‍👩ii͏,‍👩İͅİ͏,‍👩İͅİ͏,3,false
+,,,0,,,,0,true
+Kkíá👩͏👩İ ̌,͏͏í  ,Kkia👩͏👩I ,8,kkia👩͏👩i ,Kkíá👩͏👩İ ̌,Kkíá👩͏👩İ ̌,4,false
+,👩İ	͏İͅ͏,,0,,👩İ	͏İͅ͏,,0,true
+káḱá‍͏kͅ,,kaka‍͏k,5,kaka‍͏k,káḱá‍͏kͅ,káḱá‍͏kͅ,4,true
+͏́ǨKř	👩	á,̌	ŘK á̌ͅ ͅí,͏KKr	👩	a,8,͏kkr	👩	a,͏́ǨKř	👩	á,͏́ǨKř	👩	á,4,true
+,‍	k	  İŘá,,0,,‍	k	  İŘá,,0,true
+́̌👩áíí‍a͏áͅ,Ř̌ř í á,👩aii‍a͏a,7,👩aii‍a͏a,́̌👩áíí‍a͏áͅ,́̌👩áíí‍a͏́áͅ,7,true
+a͏👩👩ͅİİ,,a͏👩👩II,5,a͏👩👩ii,a͏👩👩ͅİİ,a͏👩👩ͅİİ,3,false
+ááŘ,👩‍͏,aaR,3,aar,ááŘ,ááŘ,3,true
+a	İ‍ ͏̌👩	Ř,	İá,a	I‍ ͏👩	R,7,a	i‍ ͏👩	r,a	İ‍ ͏̌👩	Ř,a	İ‍ ͏̌👩	Ř,3,false
+, ͏ḰK ́ ,,0,, ͏ḰK ́ ,,0,true
+a👩 k,👩Ka	Ř̌,a👩 k,4,a👩 k,a👩 k,a👩 k,0,true
+ ,ík ͏‍áK͏‍, ,1, , , ,0,true
+͏ř́́́,ařřřkKİaí,͏r,2,͏r,͏ř́́́,͏ř́́́,4,true
+Ḱ́,ka͏̌‍,K,1,k,Ḱ́,Ḱ́,2,true
+kŘ‍👩 ͏,Ř͏Ř👩👩,kR‍👩 ͏,4,kr‍👩 ͏,kŘ‍👩 ͏,kŘ‍👩 ͏,1,true
+‍̌	í,👩 řák,‍	i,3,‍	i,‍̌	í,‍̌	í,2,true
+ř,  aaíŘŘͅ,r,1,r,ř,ř,1,true
+,í́,,0,,í́,,0,true
+‍	aa Ř,͏́👩,‍	aa R,6,‍	aa r,‍	aa Ř,‍	aa Ř,1,true
+͏,á̌K͏,͏,1,͏,͏,͏,0,true
+̌ařŘk͏,,arRk͏,5,arrk͏,̌ařŘk͏,̌ařŘk͏,3,true
+áͅř̌͏ííí👩řͅ,͏ ,ar͏iii👩r,7,ar͏iii👩r,áͅř̌͏ííí👩řͅ,áͅř̌͏ííí👩řͅ,9,true
+́  a	aͅŘ k,	křřİááa,  a	aR k,9,  a	ar k,́  a	aͅŘ k,́  a	áͅŘ k,3,true
+Ḱ ,́	řřŘ	👩,K ,2,k ,Ḱ ,Ḱ ,1,true
+‍í,řİkͅŘá Ř,‍i,2,‍i,‍í,‍í,1,true
+͏áá͏ař,Řk‍ͅ͏,͏aa͏ar,5,͏aa͏ar,͏áá͏ař,͏áá͏ař,3,true
+	ǎͅř͏͏,‍	‍K		̌í👩,	ar͏͏,3,	ar͏͏,	ǎͅř͏͏,	ǎͅř͏͏,3,true
+ ííŘǎ̌,👩ḱ	aak‍í	, iiRa,5, iira, ííŘǎ̌, ííŘǎ̌,5,true
+ͅŘa‍͏á͏ař‍,í‍řİKͅŘíáá,Ra‍͏a͏ar‍,6,ra‍͏a͏ar‍,ͅŘa‍͏á͏ař‍,ͅŘa‍͏á͏ař‍,4,true
+íá👩İ̌aař,á👩,ia👩Iaar,7,ia👩iaar,íá👩İ̌aař,íá👩İ̌aař,5,false
+͏ͅř́ř͏Ř👩	👩,ří́K,͏rr͏R👩	👩,7,͏rr͏r👩	👩,͏ͅř́ř͏Ř👩	👩,͏ͅř́ř͏Ř👩	👩,5,true
+K͏👩İ‍İ	,řa	͏ Kíaá	á,K͏👩I‍I	,5,k͏👩i‍i	,K͏👩İ‍İ	,K͏👩İ‍İ	,2,false
+,,,0,,,,0,true
+,K	k‍,,0,,K	k‍,,0,true
+k,ͅí́ͅ ‍İ,k,1,k,k,k,0,true
+İaK ,ǩ͏͏̌ ͏K ́	,IaK ,4,iak ,İaK ,İaK ́,1,false
+kŘá͏Řİ👩,‍ář,kRa͏RI👩,6,kra͏ri👩,kŘá͏Řİ👩,kŘá͏Řİ👩,4,false
+ ‍ͅ	‍K,ǎ́	İ‍ͅ a͏İ, ‍	‍K,4, ‍	‍k, ‍ͅ	‍K, ‍ͅ	‍K,1,true
+, á,,0,, á,,0,true
+,	ͅíİͅ͏	,,0,,	ͅíİͅ͏	,,0,true
+̌👩áK í̌ͅ,íáŘř👩 ,👩aK i,6,👩ak i,̌👩áK í̌ͅ,̌👩áK í̌ͅ,5,true
+́k‍Ř,ͅá,k‍R,3,k‍r,́k‍Ř,́k‍Ř,2,true
+👩í̌́́,̌İaářKKŘ,👩i,2,👩i,👩í̌́́,👩í̌́́,4,true
+͏İ	ͅ͏İͅaͅKk,a👩👩́̌̌řř,͏I	͏IaKk,8,͏i	͏iakk,͏İ	ͅ͏İͅaͅKk,͏İ	ͅ͏İͅaͅKk,5,false
+́‍👩̌řká̌͏řK,áŘͅ,‍👩rka͏rK,7,‍👩rka͏rk,́‍👩̌řká̌͏řK,́‍👩̌řká̌͏řK,6,true
+,,,0,,,,0,true
+‍áŘ́‍ ‍	í,Ř͏	KŘa,‍aR‍ ‍	i,6,‍ar‍ ‍	i,‍áŘ́‍ ‍	í,‍áŘ́‍ ‍	í,4,true
+ář‍ ,Kİ́ͅͅa‍́í,ar‍ ,3,ar‍ ,ář‍ ,ář‍ ,2,true
+kKaİ́İͅ,Ǩ,kKaII,5,kkaii,kKaİ́İͅ,kKaİ́İͅ,4,false
+ͅͅk👩Ř ,͏í̌͏ŘͅaİK‍,k👩R ,5,k👩r ,ͅͅk👩Ř ,ͅͅk👩Ř ,3,true
+👩á	Kİř͏áíK,	İ ř	aaŘ,👩a	KIr͏aiK,9,👩a	kir͏aik,👩á	Kİř͏áíK,👩á	Kİř͏áíK,5,false
+Řřİař,Ří‍		́,RrIar,5,rriar,Řřİaří‍	,Řřİař,4,false
+,	,,0,,	,,0,true
+k‍,Řř̌á͏íáͅKaa,k‍,1,k‍,k‍,k‍,0,true
+	ří́‍řaí‍,,	ri‍rai‍,6,	ri‍rai‍,	ří́‍řaí‍,	ří́‍řaí‍,5,true
+İ‍áKá͏k👩áí,í́kİ‍̌íİ̌k,I‍aKa͏k👩ai,8,i‍aka͏k👩ai,İ‍áKá͏k👩áí,İ‍áKá͏k👩áí,5,false
+̌‍,,‍,1,‍,̌‍,̌‍,1,true
+ŘakákKí, á	͏Kk ‍k,RakakKi,7,rakakki,ŘakákKí,ŘákákKí,3,true
+👩͏,Ř	👩,👩͏,1,👩͏,👩͏,👩͏,0,true
+‍íaá,‍k,‍iaa,4,‍iaa,‍íaák,‍íaá,2,true
+̌͏,,͏,1,͏,̌͏,̌͏,1,true
+k‍	ͅ͏İͅḰ,👩a,k‍	͏IK,5,k‍	͏ik,k‍	ͅ͏İͅḰ,k‍	ͅ͏İͅḰ,4,false
+ͅ İ͏a👩ͅ	͏,͏, I͏a👩	͏,7, i͏a👩	͏,ͅ İ͏a👩ͅ	͏,ͅ İ͏a👩ͅ	͏,3,false
+‍aŘ👩ŘŘí,͏á,‍aR👩RRi,7,‍ar👩rri,‍aŘ👩ŘŘí,‍áŘ👩ŘŘí,4,true
+ řKřͅ‍ͅŘ ,íaří ář👩Ř‍, rKr‍R ,6, rkr‍r , řKřͅ‍ͅŘ , řKřͅ‍ͅŘ ,5,true
+kř👩👩Káí İřŘ,👩́KKk,kr👩👩Kai IrR,11,kr👩👩kai irr,kř👩👩Káí İřŘ,kř👩👩Káí İřŘ,6,false
+,͏a,,0,,͏a,,0,true
+İ́,ͅř,I,1,i,İ́,İ́,2,false
+ͅ͏k,	ͅŘ,͏k,2,͏k,ͅ͏k,ͅ͏k,1,true
+ͅaa,řř́̌	,aa,3,aa,ͅaa,ͅaa,1,true
+á,͏́,a,1,a,á,á,1,true
+👩Ří‍íK‍,aḱ͏áá͏,👩Ri‍iK‍,5,👩ri‍ik‍,👩Ří‍íK‍,👩Ří‍íK‍,3,true
+ͅŘíá̌ İá👩ͅ,͏kKk‍͏̌👩ͅ ,Ria Ia👩,8,ria ia👩,ͅŘíá̌ İá👩ͅ,ͅŘíá̌ İá👩ͅ,8,false
+áǎáí,,aaai,4,aaai,áǎáí,áǎáí,4,true
+Ř👩̌ͅ	řáííí,Řařİa͏,R👩	raiii,8,r👩	raiii,Ř👩̌ͅ	řáíííİ͏,Ř👩̌ͅ	řá͏ííí,8,true
+áŘŘ̌,Řͅİ͏	́ͅak,aRR,3,arr,áŘŘ̌,áŘŘ̌,4,true
+k‍a	͏ řřŘ ,‍ ̌İíí👩aá,k‍a	͏ rrR ,9,k‍a	͏ rrr ,k‍a	͏ řřŘ ,k‍a	͏ řřŘ ,3,true
+K👩Řaí	̌ͅ͏,͏‍ á 👩,K👩Rai	͏,7,k👩rai	͏,K👩Řaí	̌ͅ͏,K👩Řaí	̌ͅ͏,4,true
+́,	řř‍	,,1,,́,́,1,true
+ǎí	, İř řİ,ai	,3,ai	,ǎí	,ǎí	,2,true
+í‍a͏íáŘ	́,,i‍a͏iaR	,7,i‍a͏iar	,í‍a͏íáŘ	́,í‍a͏íáŘ	́,5,true
+,👩íř,,0,,👩íř,,0,true
+KkŘáí👩,a͏	í,KkRai👩,6,kkrai👩,KkŘáí👩,KkŘáí👩,3,true
+řk͏	ͅͅİ,k	İ,rk͏	I,5,rk͏	i,řk͏	ͅͅİ,řk͏	ͅͅİ,4,false
+kİ	kí	K k,,kI	ki	K k,9,ki	ki	k k,kİ	kí	K k,kİ	kí	K k,2,false
+‍́‍k͏,	ŘŘ,‍‍k͏,2,‍‍k͏,‍́‍k͏,‍́‍k͏,1,true
+ͅ‍́͏ͅk İ	K,̌	kkřřİ,‍͏k I	K,6,‍͏k i	k,ͅ‍́͏ͅk İ	K,ͅ‍́͏ͅk İ	K,4,false
+İaa👩,á,Iaa👩,4,iaa👩,İaa👩,İaa👩,1,false
+İİKİŘ̌ͅ‍,	kİaář̌,IIKIR‍,5,iikir‍,İİKİŘ̌ͅ‍,İİKİŘ̌ͅ‍,6,false
+K͏͏Kí‍͏,͏kŘ́ í‍,K͏͏Ki‍͏,3,k͏͏ki‍͏,K͏͏Kí‍͏,K͏͏Kí‍͏,1,true
+İ👩,á ̌ří͏,I👩,2,i👩,İ👩,İ👩,1,false
+́́ ,́̌‍k‍íř, ,2, ,́́ ̌‍kir,́́̌‍ ,2,true
+a,İ👩ř	K,a,1,a,a,a,0,true
+kǎa͏,	ŘKaŘKkŘaK,kaa͏,3,kaa͏,kǎa͏,kǎa͏,1,true
+,,,0,,,,0,true
+İİáíř̌a,ͅ,IIaira,6,iiaira,İİáíř̌a,İİáíř̌a,6,false
+áí͏͏,́	́,ai͏͏,2,ai͏͏,áí͏͏,áí͏͏,2,true
+Řk a👩,‍ář ‍Říaİ͏k,Rk a👩,5,rk a👩,Řk a👩,Řk a👩,1,true
+͏ͅaá	,,͏aa	,4,͏aa	,͏ͅaá	,͏ͅaá	,2,true
+Kaͅ ,👩ͅ👩Kííͅř	á ,Ka ,3,ka ,Kaͅ ,Kaͅ ,1,true
+řří,á͏K͏İ k͏̌́,rri,3,rri,řří,řří,3,true
+aíaá̌👩👩İ,a👩 í́Ř,aiaa👩👩I,7,aiaa👩👩i,aíaá̌👩👩İ R,aíaá̌👩👩İ,4,false
+,,,0,,,,0,true
+͏í	İŘ‍ǩİ,ř	aͅ͏,͏i	IR‍kI,7,͏i	ir‍ki,͏í	İŘ‍ǩİ,͏í	İŘ‍ǩİ,5,false
+İ̌	,,I	,2,i	,İ̌	,İ̌	,2,false
+Ř👩íákřřř ́́,	͏,R👩iakrrr ,9,r👩iakrrr ,Ř👩íákřřř ́́,Ř👩íákřřř ́́,8,true
+̌👩	íİí		‍	,̌ͅK👩íí,👩	iIi		‍	,10,👩	iii		‍	,̌👩	íİí		‍	ͅK,̌ͅ👩	íİí		‍	,4,false
+í,İͅ	͏‍ͅͅř👩K,i,1,i,í,í,1,true
+İKİ	👩 áK͏‍,ͅ	íŘ‍ ,IKI	👩 aK͏‍,8,iki	👩 ak͏‍,İKİ	👩 áK͏‍,İKİ	👩 áK͏‍,3,false
+,͏kͅa👩,,0,,͏kͅa👩,,0,true
+̌İ ͏̌ář k,ͅ‍Ř,I ͏ar k,7,i ͏ar k,̌İ ͏̌ář k,̌İ ͏̌ář k,5,false
+íİk‍ ͅk,👩k	‍  a👩́İ,iIk‍ k,5,iik‍ k,íİk‍ ͅk,íİk‍ ͅk,3,false
+ ááİ́ǎ,̌ ͏ářá, aaIa,5, aaia, ááİ́ǎ, ááİ́ǎ́,5,false
+ͅİK‍‍íİ	̌K,͏křŘͅ͏íŘ̌́ͅ,IK‍‍iI	K,8,ik‍‍ii	k,ͅİK‍‍íİ	̌K,ͅİK‍‍íİ	̌K,5,false
+İ‍k,  İḱkŘaŘ‍,I‍k,2,i‍k,İ‍k,İ‍k,1,false
+ ḱ ́	̌͏Řř,KŘİͅ, k 	͏Rr,7, k 	͏rr, ḱ ́	̌͏Řř, ḱ ́	̌͏Řř,5,true
+, kŘͅİí,,0,, kŘͅİí,,0,true
+ͅí́kk,	̌ Ř͏áak,ikk,4,ikk,ͅí́kk,ͅí́kk,3,true
+Ř͏k,͏á,R͏k,2,r͏k,Ř͏k,Ř͏k,1,true
+íŘ͏‍İ,́Ká 	k,iR͏‍I,3,ir͏‍i,íŘ͏‍İ,íŘ͏‍İ,3,false
+a,	,a,1,a,a,a,0,true
+́ ak‍Kİá,͏İ ‍, ak‍KIa,7, ak‍kia,́ ak‍Kİá,́ ak‍Kİá,3,false
+í,̌ ̌İáíŘKİ,i,1,i,í,í,1,true
+,İͅ‍ŘŘk a,,0,,İͅ‍ŘŘk a,,0,true
+͏řřař	,Kř͏,͏rrar	,6,͏rrar	,͏řřař	,͏ř͏řař	,3,true
+í👩ř͏👩‍‍‍,ͅİa‍İaǨ	 ,i👩r͏👩‍‍‍,4,i👩r͏👩‍‍‍,í👩ř͏👩‍‍‍,í👩ř͏👩‍‍‍,2,true
+́kͅkKř👩Ř͏ ,ͅİ́í,kkKr👩R͏ ,8,kkkr👩r͏ ,́kͅkKř👩Ř͏ ,́kͅkKř👩Ř͏ ,4,true
+ř́aŘͅá,íř	͏́ͅŘ,raRa,4,rara,ř́aŘͅá,ř́aŘͅá,5,true
+,İK,,0,,İK,,0,true
+Křkaříá,,Krkaria,7,krkaria,Křkaříá,Křkaříá,4,true
+́͏,ͅ,͏,1,͏,́͏,́͏,1,true
+ák ͏ḱ‍	İ,k,ak ͏k‍	I,6,ak ͏k‍	i,ák ͏ḱ‍	İ,ák ͏ḱ‍	İ,3,false
+aͅİk‍,á	,aIk‍,3,aik‍,aͅİk‍́	,áͅİk‍,2,false
+,͏ͅ ͅŘ👩,,0,,͏ͅ ͅŘ👩,,0,true
+á👩,̌	͏a͏̌͏á,a👩,2,a👩,á👩,á👩,1,true
+,‍á ík ,,0,,‍á ík ,,0,true
+	,͏,	,1,	,	,	,0,true
+̌Ř ̌á ͅ,k‍řa,R a ,5,r a ,̌Ř ̌á ͅ,̌Ř ̌á ͅ,5,true
+👩͏  ‍İ Řá,́ͅK͏👩áa,👩͏  ‍I Ra,7,👩͏  ‍i ra,👩͏  ‍İ Řá,👩͏  ‍İ Řá,3,false
+İ ͏a,kǎ 		͏̌akí,I ͏a,3,i ͏a,İ ͏a,İ ͏a,1,false
+́ͅİk ̌̌KİŘ,ř 👩řK,Ik KIR,7,ik kir,́ͅİk ̌̌KİŘ,́ͅİk ̌̌KİŘ,7,false
+ř͏a͏	á Řa, İ,r͏a͏	a Ra,7,r͏a͏	a ra,ř͏a͏	á Řa,ř͏a͏	á Řa,3,true
+͏,́ kK	İ	͏	aİ,͏,1,͏,͏,͏,0,true
+Ř‍ǩ,👩Ř‍íİkK	K‍͏,R‍k,2,r‍k,Ř‍ǩ,Ř‍ǩ,2,true
+Řİ👩k, Ř řkk,RI👩k,4,ri👩k,Řİ👩k,Řİ👩k,2,false
+̌K	ͅ	İͅ͏	a,̌ͅá,K		I͏	a,8,k		i͏	a,̌K	ͅ	İͅ͏	á,̌ͅK	ͅ	İͅ͏	a,4,false

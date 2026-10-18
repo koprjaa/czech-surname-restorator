@@ -296,3 +296,18 @@ fn fuzzy_threshold_and_long_alignments() {
     let haystack = format!("{}{}{}", "x".repeat(80), needle, "x".repeat(80));
     assert_eq!(weighted_ratio(&needle, &haystack), 90.0);
 }
+
+#[test]
+fn empty_index_bucket_uses_fuzzy_fallback() {
+    let mut index = Index::new();
+    index.insert(index_key("Novak"), Vec::new());
+    assert_eq!(correct_name("Novak", &index, &strings(&["Novák"])), "Novák");
+}
+
+#[test]
+fn long_identical_fuzzy_strings_and_recent_unicode() {
+    let name = "a".repeat(100_000);
+    assert_eq!(weighted_ratio(&name, &name), 100.0);
+    // The Rust Unicode database recognizes this letter added after Python 3.11's database.
+    assert!(!is_czech_spelling("\u{1c89}"));
+}
