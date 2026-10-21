@@ -535,7 +535,7 @@ fn frozen_python_cli_oracle() {
 }
 
 #[test]
-fn later_invalid_chunk_keeps_completed_chunks() {
+fn later_invalid_chunk_leaves_no_partial_output() {
     let w = Workspace::new();
     fs::write(
         w.0.join("input.csv"),
@@ -544,5 +544,28 @@ fn later_invalid_chunk_keeps_completed_chunks() {
     .unwrap();
     let out = w.run(&["input.csv", "--chunk-size", "1"]);
     assert_eq!(out.status.code(), Some(1));
-    assert_eq!(w.output(), "Person_Name,given_name,surname,corrected_surname,corrected_name\nJan Dvorak,Jan,Dvorak,Dvořák,Jan Dvořák\n");
+    assert!(!w.0.join("output_corrected.csv").exists());
+    assert!(!w.0.join("output_corrected.csv.tmp").exists());
+}
+
+#[test]
+fn uppercase_surnames_are_restored_and_other_columns_keep_na() {
+    let w = Workspace::new();
+    w.write("surnames_all.csv", "column1\nNovák\n");
+    w.write("in.csv", "Person_Name,Country\nJan NOVAK,NA\n");
+    let out = w.run(&["in.csv"]);
+    assert!(out.status.success());
+    let text = w.output();
+    assert!(text.contains("Jan NOVÁK"), "{text}");
+    assert!(text.contains(",NA,"), "{text}");
+}
+#[test]
+fn failed_run_keeps_previous_output() {
+    let w = Workspace::new();
+    w.write("output_corrected.csv", "old\n");
+    w.write("in.csv", "Person_Name\nJan Novak\nJan Novak,extra\n");
+    let out = w.run(&["in.csv"]);
+    assert!(!out.status.success());
+    assert_eq!(w.output(), "old\n");
+    assert!(!w.0.join("output_corrected.csv.tmp").exists());
 }

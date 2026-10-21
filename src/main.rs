@@ -325,6 +325,11 @@ fn same_path(a: &Path, b: &Path) -> bool {
     };
     matches!((absolute(a), absolute(b)), (Some(a), Some(b)) if a == b)
 }
+fn temp_path(output: &Path) -> PathBuf {
+    let mut name = output.as_os_str().to_owned();
+    name.push(".tmp");
+    PathBuf::from(name)
+}
 fn run(args: &Args, log: &mut Logger) -> Result<bool> {
     if !args.input.exists() {
         log.log(
@@ -425,9 +430,17 @@ fn run(args: &Args, log: &mut Logger) -> Result<bool> {
             if row.len() > original_len {
                 return Err("Input CSV has more fields than its header".into());
             }
+            // Only the name column is NA-normalised; other columns (e.g. Country=NA) stay as-is.
             let mut row: Vec<String> = row
                 .iter()
-                .map(|s| if is_na(s) { String::new() } else { s.into() })
+                .enumerate()
+                .map(|(i, s)| {
+                    if i == name_col && is_na(s) {
+                        String::new()
+                    } else {
+                        s.into()
+                    }
+                })
                 .collect();
             row.resize(columns.len(), String::new());
             chunk.push(row);
@@ -439,7 +452,7 @@ fn run(args: &Args, log: &mut Logger) -> Result<bool> {
                 } else {
                     csv::Terminator::Any(b'\n')
                 })
-                .from_path(&args.output)?;
+                .from_path(temp_path(&args.output))?;
             writer.write_record(&columns)?;
             output = Some(writer);
         }
@@ -449,6 +462,7 @@ fn run(args: &Args, log: &mut Logger) -> Result<bool> {
                 log.log("INFO", "Wrote 0 rows so far");
             }
             output.flush()?;
+            std::fs::rename(temp_path(&args.output), &args.output)?;
             break;
         }
         for row in &mut chunk {
@@ -524,6 +538,7 @@ fn main() {
         Ok(true) => (),
         Ok(false) => std::process::exit(1),
         Err(e) => {
+            let _ = std::fs::remove_file(temp_path(&args.output));
             log.log("ERROR", &e.to_string());
             std::process::exit(1);
         }

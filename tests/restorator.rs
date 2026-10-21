@@ -264,7 +264,7 @@ fn czech_and_slovak() {
 #[test]
 fn combining_category_case_and_fuzzy_ties() {
     assert!(is_czech_spelling("\u{0345}"));
-    assert_eq!(apply_diacritics("DVORAK", "Dvořák"), "DVORAK");
+    assert_eq!(apply_diacritics("DVORAK", "Dvořák"), "DVOŘÁK");
     assert_eq!(merge_marks("r\u{0301}", "ř"), "ŕ\u{030c}");
     assert_eq!(
         correct_name("Dvořakova", &Index::new(), &strings(&["Dvořák", "Dvořak"])),

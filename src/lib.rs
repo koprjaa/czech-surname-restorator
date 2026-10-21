@@ -33,7 +33,8 @@ pub fn merge_marks(original: &str, reference: &str) -> String {
     let Some(other) = r.next() else {
         return original.into();
     };
-    if base != other {
+    // Case differs freely (NOVAK vs Novák); the original's letter and case win.
+    if !base.to_lowercase().eq(other.to_lowercase()) {
         return original.into();
     }
     let mut marks: Vec<char> = o.collect();

@@ -1,7 +1,7 @@
 Person_Name,note,given_name,surname,corrected_surname,corrected_name
 Jan Dvorak,"a,b",Jan,Dvorak,Dvořák,Jan Dvořák
 Petr Kucera,"a""b",Petr,Kucera,Kučera,Petr Kučera
-Anna Marie Kopriva,,Anna,Kopriva,Kopřiva,Anna Kopřiva
+Anna Marie Kopriva,NA,Anna,Kopriva,Kopřiva,Anna Kopřiva
 Solo,001,Solo,Solo,Solo,Solo Solo
 ,missing,,,,
  Jan Dvorak,leading,,Dvorak,Dvořák,
