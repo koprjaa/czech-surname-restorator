@@ -3,7 +3,7 @@
 Restores diacritics to Czech surnames in CSV files.
 
 [![CI](https://github.com/koprjaa/czech-surname-restorator/actions/workflows/ci.yml/badge.svg)](https://github.com/koprjaa/czech-surname-restorator/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-A31F34)](LICENSE)
+[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-A31F34)](LICENSE)
 
 ## What it does
 
@@ -45,4 +45,4 @@ czech-surname-restorator --help
 
 ## License
 
-[MIT](LICENSE)
+[AGPL-3.0-or-later](LICENSE)

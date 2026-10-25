@@ -2,8 +2,7 @@
 // File: src/main.rs
 // Description: Streaming CSV command line processing with ordered parallel batches.
 // Author: Jan Alexandr Kopřiva
-// License: MIT
-
+// License: AGPL-3.0-or-later
 use chrono::Local;
 use clap::Parser;
 use czech_surname_restorator::{build_index, correct_name, index_key, Index};

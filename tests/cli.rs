@@ -2,8 +2,7 @@
 // File: tests/cli.rs
 // Description: Offline CLI, CSV byte format, logging and failure regression tests.
 // Author: Jan Alexandr Kopřiva
-// License: MIT
-
+// License: AGPL-3.0-or-later
 use std::{
     fs,
     path::{Path, PathBuf},

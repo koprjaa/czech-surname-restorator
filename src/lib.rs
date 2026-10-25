@@ -2,8 +2,7 @@
 // File: src/lib.rs
 // Description: Unicode restoration and deterministic fuzzy surname matching.
 // Author: Jan Alexandr Kopřiva
-// License: MIT
-
+// License: AGPL-3.0-or-later
 use std::collections::HashMap;
 use unicode_general_category::{get_general_category, GeneralCategory};
 use unicode_normalization::{char::canonical_combining_class, UnicodeNormalization};

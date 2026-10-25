@@ -2,8 +2,7 @@
 // File: tests/restorator.rs
 // Description: Equivalents of every original matching and reference regression test.
 // Author: Jan Alexandr Kopřiva
-// License: MIT
-
+// License: AGPL-3.0-or-later
 use czech_surname_restorator::*;
 use std::{collections::HashSet, path::Path};
 fn reference() -> Vec<String> {

@@ -2,7 +2,7 @@
 // File: tests/differential.rs
 // Description: Frozen RapidFuzz oracle scores for adversarial Unicode and token inputs.
 // Author: Jan Alexandr Kopřiva
-// License: MIT
+// License: AGPL-3.0-or-later
 use czech_surname_restorator::weighted_ratio;
 #[test]
 fn rapidfuzz_oracle_scores() {
